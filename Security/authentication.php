@@ -1,30 +1,25 @@
 <?php
 include("../Config/required.php");
 
-if (isset($input['username']) && isset($input['password'])) {
-    $username = trim($input['username']);
-    $password = trim($input['password']);
+if (isset($username) && isset($password)) {
 
-    $sql = "SELECT * FROM user WHERE `username` = '" . $username . "' AND `password` = '" . $password . "'";
-    $data = '';
-    $response = new Response();
+    $sql = "SELECT * FROM user WHERE `username` = '$username' AND `password` = '$password' AND `isActive`";
     $result = mysqli_query($conn, $sql);
-    $res = $result->num_rows;
-
+    $res = mysqli_num_rows($result);
+    
     if ($res === 1) {
-        $data = $result->fetch_assoc(); // fetch the single row
         $response = new Response(
             status: 'success',
-            message: 'Successful',
-            data: $data,  // now data is user info
-            code: 200
+            message: HTTPResponseCode::$SUCCESS->message,
+            data: null,  // now data is user info
+            code: HTTPResponseCode::$SUCCESS->code
         );
     } else {
         $response = new Response(
             status: 'failed',
-            message: 'Unauthorized',
+            message: HTTPResponseCode::$UNAUTHORIZED->message,
             data: null,
-            code: 401
+            code: HTTPResponseCode::$UNAUTHORIZED->code
         );
     }
 
