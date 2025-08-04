@@ -8,8 +8,9 @@ if ($pageSize > 0) {
     $sql = "SELECT * FROM user WHERE `isActive` ";
 
     if (isset($_GET["searchValue"])) {
-      if ($searchValue = $_GET["searchValue"])
-        $sql .= "AND `username` LIKE '%" . $searchValue . "%'";
+      if ($searchValue = $_GET["searchValue"]){
+        $sql .= " AND `username` LIKE '%" . $searchValue . "%' ";
+      }
     }
 
     $dataLimiter = $sql . "LIMIT $pageSize OFFSET $offset";
