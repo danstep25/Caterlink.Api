@@ -7,5 +7,6 @@
 
   enum MODULE {
   case User;
+  case UserGroup;
   }
 ?>
