@@ -5,34 +5,33 @@ try {
   if (!empty($input["request"])) {
     $request = $input["request"];
 
-    $abbr = !empty($request["abbr"]) ? $request["abbr"] : "";
-    $description = !empty($request["description"]) ? $request["description"] : "";
+    $name = !empty($request["name"]) ? $request["name"] : "";
+    $contact = !empty($request["contact"]) ? $request["contact"] : "";
 
-
-    if (empty($abbr)) {
-      array_push($errors, new ErrorResponse("Abbr is required"));
+    if (empty($name)) {
+      array_push($errors, new ErrorResponse("Name is required"));
     }
 
-    if (empty($description)) {
-      array_push($errors, new ErrorResponse("Description is required"));
+    if (empty($contact)) {
+      array_push($errors, new ErrorResponse("Contact is required"));
     }
 
-    $validationQuery = "SELECT * FROM `usergroup` WHERE 
-      `abbr` = '" . $abbr . "' AND
-      `description` = '" . $description . "' AND
+    $validationQuery = "SELECT * FROM `supplier` WHERE 
+      `name` = '$name' AND
+      `contact` = '$contact' AND
       `isActive`
       ";
 
-    (new Validation($conn, $validationQuery))->isValid(MODULE::UserGroup,METHOD::CREATE);
+    (new Validation($conn, $validationQuery))->isValid(MODULE::Supplier,METHOD::CREATE);
 
     if (count($errors) > 0) {
       $errorString = ErrorResponse::constructMessage($errors);
       return throw new Exception($errorString, code: HTTPResponseCode::$BAD_REQUEST->code);
     }
 
-    $sql = "INSERT INTO `usergroup` 
-      (`abbr`, `description`) 
-      VALUES ('" . $abbr . "', '" . $description . "')";
+    $sql = "INSERT INTO `supplier` 
+      (`name`, `contact`) 
+      VALUES ('$name', '$contact')";
 
     $result = mysqli_query($conn, $sql);
 

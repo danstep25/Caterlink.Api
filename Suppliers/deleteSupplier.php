@@ -4,13 +4,13 @@ include("../Config/required.php");
 try {
   if (!empty($input["request"])) {
     $request = $input["request"];
-    $userGroupId = $request["userGroupId"];
+    $supplierId = $request["supplierId"];
 
-    $validationQuery = "SELECT * FROM `usergroup` WHERE `userGroupId` = $userGroupId AND `isActive`";
+    $validationQuery = "SELECT * FROM `supplier` WHERE `supplierId` = $supplierId AND `isActive`";
 
-    (new Validation($conn, $validationQuery))->isValid(MODULE::UserGroup, METHOD::DELETE);
+    (new Validation($conn, $validationQuery))->isValid(MODULE::Supplier, METHOD::DELETE);
 
-    $query = "UPDATE `usergroup` SET `isActive` = 0, `updatedAt` = CURRENT_TIMESTAMP WHERE `userGroupId`= '$userGroupId' AND `isActive`";
+    $query = "UPDATE `supplier` SET `isActive` = 0, `updatedAt` = CURRENT_TIMESTAMP WHERE `supplierId`= '$supplierId' AND `isActive`";
     $result = mysqli_query($conn, $query);
 
     echo (new Response(

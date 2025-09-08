@@ -4,13 +4,13 @@ include("../Config/required.php");
 try {
   if (!empty($input["request"])) {
     $request = $input["request"];
-    $userGroupId = $request["userGroupId"];
+    $ingredientId = $request["ingredientId"];
 
-    $validationQuery = "SELECT * FROM `usergroup` WHERE `userGroupId` = $userGroupId AND `isActive`";
+    $validationQuery = "SELECT * FROM `ingredients` WHERE `ingredientId` = $ingredientId AND `isActive`";
 
-    (new Validation($conn, $validationQuery))->isValid(MODULE::UserGroup, METHOD::DELETE);
+    (new Validation($conn, $validationQuery))->isValid(MODULE::Ingredients, METHOD::DELETE);
 
-    $query = "UPDATE `usergroup` SET `isActive` = 0, `updatedAt` = CURRENT_TIMESTAMP WHERE `userGroupId`= '$userGroupId' AND `isActive`";
+    $query = "UPDATE `ingredients` SET `isActive` = 0, `updatedAt` = CURRENT_TIMESTAMP WHERE `ingredientId`= '$ingredientId' AND `isActive`";
     $result = mysqli_query($conn, $query);
 
     echo (new Response(

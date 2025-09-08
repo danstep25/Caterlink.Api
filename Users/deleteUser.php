@@ -10,7 +10,7 @@ try {
 
     (new Validation($conn, $validationQuery))->isValid(MODULE::User, METHOD::DELETE);
 
-    $query = "UPDATE `user` SET `isActive` = 0 WHERE `userId`= '$userId' AND `isActive`";
+    $query = "UPDATE `user` SET `isActive` = 0, `updatedAt` = CURRENT_TIMESTAMP WHERE `userId`= '$userId' AND `isActive`";
     $result = mysqli_query($conn, $query);
 
     echo (new Response(

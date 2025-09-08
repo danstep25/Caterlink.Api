@@ -8,5 +8,7 @@
   enum MODULE {
   case User;
   case UserGroup;
+  case Supplier;
+  case Ingredients;
   }
 ?>

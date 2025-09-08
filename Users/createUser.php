@@ -25,7 +25,8 @@ try {
       `firstname` = '" . $firstname . "' AND
       `middlename` = '" . $middlename . "' AND
       `lastname` = '" . $lastname . "' AND
-      `suffix` = '" . $suffix . "'
+      `suffix` = '" . $suffix . "' AND
+      `isActive`
       ";
 
     (new Validation($conn, $validationQuery))->isValid(MODULE::User,METHOD::CREATE);
