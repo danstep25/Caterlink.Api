@@ -10,5 +10,8 @@
   case UserGroup;
   case Supplier;
   case Ingredients;
+  case UnitOfMeasurement;
+  case Dish;
+  case Category;
   }
 ?>

@@ -8,6 +8,8 @@ try {
     $name = !empty($request["name"]) ? $request["name"] : "";
     $description = !empty($request["description"]) ? $request["description"] : "";
     $supplierId = !empty($request["supplierId"]) ? $request["supplierId"] : "";
+    $qty = !empty($request["qty"]) ? $request["qty"] : "";
+    $umId = !empty($request["umId"]) ? $request["umId"] : "";
     $purchaseDate = !empty($request["purchaseDate"]) ? $request["purchaseDate"] : "";
     $expirationDate = !empty($request["expirationDate"]) ? $request["expirationDate"] : "";
 
@@ -17,6 +19,14 @@ try {
 
     if (empty($description)) {
       array_push($errors, new ErrorResponse("description is required"));
+    }
+
+    if (empty($qty)) {
+      array_push($errors, new ErrorResponse("Quantity is required"));
+    }
+
+    if (empty($umId)) {
+      array_push($errors, new ErrorResponse("Unit of Measurement is required"));
     }
 
     if (empty($supplierId)) {
@@ -46,8 +56,8 @@ try {
     }
 
     $sql = "INSERT INTO `ingredients` 
-      (`name`, `description`, `supplierId`, `purchaseDate`, `expirationDate`) 
-      VALUES ('$name', '$description', '$supplierId', '$purchaseDate', '$expirationDate')";
+      (`name`, `description`, `qty`, `umId`, `supplierId`, `purchaseDate`, `expirationDate`) 
+      VALUES ('$name', '$description' , '$qty', '$umId', '$supplierId', '$purchaseDate', '$expirationDate')";
 
     $result = mysqli_query($conn, $sql);
 

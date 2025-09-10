@@ -5,31 +5,12 @@ include("../Config/required.php");
 if ($pageSize > 0) {
   try {
     $offset = ((int)$pageIndex - 1) * $pageSize;
-    $sql = "SELECT 
-              i.*,
-              s.name AS supplier,
-              um.abbr AS um
-            FROM `ingredients` i
-            JOIN  `supplier` s ON i.supplierId = s.supplierId
-            JOIN `unitofmeasurement` um ON i.umId = um.id
-            WHERE i.isActive ";
+    $sql = "SELECT * FROM `unitofmeasurement` WHERE `isActive` ";
 
     if (isset($_GET["searchValue"])) {
       if ($searchValue = $_GET["searchValue"]){
-        $sql .= " AND i.name LIKE '%" . $searchValue . "%' OR
-                i.description LIKE '%$searchValue%'";
-      }
-    }
-
-    if (isset($_GET["purchaseDate"])) {
-      if ($purchaseDate = $_GET["purchaseDate"]) {
-        $sql .= " AND `purchaseDate` LIKE '%$purchaseDate%'";
-      }
-    }
-
-    if (isset($_GET["expirationDate"])) {
-      if ($expirationDate = $_GET["expirationDate"]) {
-        $sql .= " AND `expirationDate` LIKE '%$expirationDate%'";
+        $sql .= " AND `abbr` LIKE '%" . $searchValue . "%' OR
+                `description` LIKE '%$searchValue%'";
       }
     }
 

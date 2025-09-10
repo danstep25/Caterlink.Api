@@ -8,6 +8,8 @@ try {
     $ingredientId =  !empty($request["ingredientId"]) ? $request["ingredientId"] : "";
     $name = !empty($request["name"]) ? $request["name"] : "";
     $description = !empty($request["description"]) ? $request["description"] : "";
+    $qty = !empty($request["qty"]) ? $request["qty"] : "";
+    $umId = !empty($request["umId"]) ? $request["umId"] : "";
     $supplierId = !empty($request["supplierId"]) ? $request["supplierId"] : "";
     $purchaseDate = !empty($request["purchaseDate"]) ? $request["purchaseDate"] : "";
     $expirationDate = !empty($request["expirationDate"]) ? $request["expirationDate"] : "";
@@ -18,6 +20,14 @@ try {
 
     if (empty($description)) {
       array_push($errors, new ErrorResponse("description is required"));
+    }
+
+    if (empty($qty)) {
+      array_push($errors, new ErrorResponse("Quantity is required"));
+    }
+
+    if (empty($umId)) {
+      array_push($errors, new ErrorResponse("Unit of Measurement is required"));
     }
 
     if (empty($supplierId)) {
@@ -44,6 +54,8 @@ try {
     $sql = "UPDATE `ingredients` 
       SET `name` = '$name', 
       `description` = '$description',
+      `qty` = $qty,
+      `umId` = '$umId',
       `supplierId` = '$supplierId',
       `purchaseDate` = '$purchaseDate',
       `expirationDate` = '$expirationDate',
