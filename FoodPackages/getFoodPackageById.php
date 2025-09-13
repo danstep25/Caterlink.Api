@@ -2,11 +2,11 @@
 include("../Config/required.php");
 
 
-if (isset($_GET['dishId'])) {
-  $dishId = $_GET['dishId'];
+if (isset($_GET['foodPackageId'])) {
+  $foodPackageId = $_GET['foodPackageId'];
 
   try {
-    $sql = "SELECT * FROM dish WHERE `isActive` AND `dishId` = $dishId";
+    $sql = "SELECT * FROM foodpackage WHERE `isActive` AND `foodPackageId` = $foodPackageId";
 
     $result = mysqli_query($conn, $sql);
 
@@ -14,8 +14,9 @@ if (isset($_GET['dishId'])) {
       return throw new Error(HTTPResponseCode::$NOT_FOUND->message, HTTPResponseCode::$NOT_FOUND->code);
 
     while ($row = mysqli_fetch_assoc($result)) {
-      if (isset($row['ingredients']))
-        $row['ingredients'] = json_decode($row['ingredients'], true);
+      if (isset($row['dishes']))
+        $row['dishes'] = json_decode($row['dishes'], true);
+      
       $data = $row;
     }
 

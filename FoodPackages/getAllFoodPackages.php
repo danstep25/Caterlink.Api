@@ -5,17 +5,12 @@ include("../Config/required.php");
 if ($pageSize > 0) {
   try {
     $offset = ((int)$pageIndex - 1) * $pageSize;
-    $sql = "SELECT 
-              d.*,
-              c.description as category 
-            FROM `dish` d
-            JOIN `category` c ON d.categoryId = c.categoryId
-            WHERE d.isActive ";
+    $sql = "SELECT * FROM foodpackage WHERE isActive ";
 
     if (isset($_GET["searchValue"])) {
       if ($searchValue = $_GET["searchValue"]){
-        $sql .= " AND d.name LIKE '%" . $searchValue . "%' OR
-                d.description LIKE '%$searchValue%'";
+        $sql .= " AND name LIKE '%" . $searchValue . "%' OR
+                description LIKE '%$searchValue%'";
       }
     }
 
@@ -25,8 +20,8 @@ if ($pageSize > 0) {
     $paginatedResult = mysqli_query($conn, $dataLimiter);
 
     while ($row = mysqli_fetch_assoc($paginatedResult)) {
-      if (isset($row['ingredients'])) {
-        $row['ingredients'] = json_decode($row['ingredients'], true);
+      if (isset($row['dishes'])) {
+        $row['dishes'] = json_decode($row['dishes'], true);
       }
 
       $data[] = $row;

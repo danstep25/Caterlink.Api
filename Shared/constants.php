@@ -13,5 +13,6 @@
   case UnitOfMeasurement;
   case Dish;
   case Category;
+  case FoodPackage;
   }
 ?>
