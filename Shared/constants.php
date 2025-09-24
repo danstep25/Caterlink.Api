@@ -14,5 +14,8 @@
   case Dish;
   case Category;
   case FoodPackage;
+  case Service;
+  case Event;
+  case Reservation;
   }
 ?>

@@ -10,6 +10,7 @@ try {
     $description = !empty($request["description"]) ? $request["description"] : "";
     $dishes = !empty($request["dishes"]) ? json_encode($request["dishes"]) : "";
     $price = !empty($request["price"]) ? json_encode($request["price"]) : "";
+    $pax = !empty($request["pax"]) ? json_encode($request["pax"]) : "";
 
     if (empty($name)) {
       array_push($errors, new ErrorResponse("Name is required"));
@@ -27,6 +28,10 @@ try {
       array_push($errors, new ErrorResponse("Price is required"));
     }
 
+    if (empty($pax)) {
+      array_push($errors, new ErrorResponse("Pax is required"));
+    }
+
     $validationQuery = "SELECT * FROM `foodpackage` WHERE `foodPackageId` = $foodPackageId AND `isActive`";
 
     (new Validation($conn, $validationQuery))->isValid(MODULE::FoodPackage, METHOD::UPDATE);
@@ -40,6 +45,7 @@ try {
       SET `name` = '$name', 
       `description` = '$description',
       `dishes` = '$dishes',
+      `pax` = '$pax',
       `price` = '$price',
       `updatedAt` = CURRENT_TIMESTAMP
       WHERE `foodPackageId` = '$foodPackageId'

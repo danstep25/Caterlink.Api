@@ -45,7 +45,6 @@ try {
   }
 
 } catch (Exception $ex) {
-  var_dump("chasdada");
   echo (new Response(
     status: 'failed',
     message: $ex->getMessage() . ".",
