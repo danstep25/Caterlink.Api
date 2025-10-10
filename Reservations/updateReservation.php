@@ -15,6 +15,8 @@ try {
     $noOfGuest = !empty($request["noOfGuest"]) ? $request["noOfGuest"] : "";
     $dateFrom = !empty($request["dateFrom"]) ? $request["dateFrom"] : "";
     $dateTo = !empty($request["dateTo"]) ? $request["dateTo"] : "";
+    $venueId = !empty($request["venueId"]) ? $request["venueId"] : "";
+    $totalPrice = !empty($request["totalPrice"]) ? $request["totalPrice"] : "";
 
     if (empty($fullName)) {
       array_push($errors, new ErrorResponse("Full Name is required"));
@@ -36,6 +38,14 @@ try {
       array_push($errors, new ErrorResponse("Date from is required"));
     }
 
+    if (empty($venueId)) {
+      array_push($errors, new ErrorResponse("Venue is required"));
+    }
+
+    if (empty($totalPrice)) {
+      array_push($errors, new ErrorResponse("Total Price is required"));
+    }
+
     $validationQuery = "SELECT * FROM `reservation` WHERE `reservationId` = $reservationId AND `isActive`";
 
     (new Validation($conn, $validationQuery))->isValid(MODULE::Reservation, METHOD::UPDATE);
@@ -54,7 +64,9 @@ try {
         `eventId` = '$eventId', 
         `noOfGuest` = '$noOfGuest', 
         `dateFrom` = '$dateFrom', 
-        `dateTo` = '$dateTo' 
+        `dateTo` = '$dateTo',
+        `venueId` = '$venueId',
+        `totalPrice` = '$totalPrice' 
       WHERE reservationId = $reservationId";
 
     $result = mysqli_query($conn, $sql);

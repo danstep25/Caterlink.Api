@@ -8,6 +8,8 @@ try {
     $supplierId =  !empty($request["supplierId"]) ? $request["supplierId"] : "";
     $name = !empty($request["name"]) ? $request["name"] : "";
     $contact = !empty($request["contact"]) ? $request["contact"] : "";
+    $description = !empty($request["description"]) ? $request["description"] : "";
+    $address = !empty($request["address"]) ? $request["address"] : "";
 
     if (empty($name)) {
       array_push($errors, new ErrorResponse("Name is required"));
@@ -15,6 +17,14 @@ try {
 
     if (empty($contact)) {
       array_push($errors, new ErrorResponse("Contact is required"));
+    }
+
+    if (empty($description)) {
+      array_push($errors, new ErrorResponse("Description is required"));
+    }
+
+    if (empty($address)) {
+      array_push($errors, new ErrorResponse("Address is required"));
     }
 
     $validationQuery = "SELECT * FROM `supplier` WHERE `supplierId` = $supplierId AND `isActive`";
@@ -29,6 +39,8 @@ try {
     $sql = "UPDATE `supplier` 
       SET `name` = '$name', 
       `contact` = '$contact',
+      `description` = '$description',
+      `address` = '$address',
       `updatedAt` = CURRENT_TIMESTAMP
       WHERE `supplierId` = '$supplierId'
 

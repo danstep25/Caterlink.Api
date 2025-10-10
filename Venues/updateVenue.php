@@ -1,56 +1,36 @@
 <?php
 include("../Config/required.php");
-include("DishPackage/dishPackage.php");
 
 try {
   if (!empty($input["request"])) {
     $request = $input["request"];
 
-    $foodPackageId = !empty($request["foodPackageId"]) ? $request["foodPackageId"] : "";
+    $venueId =  !empty($request["venueId"]) ? $request["venueId"] : "";
     $name = !empty($request["name"]) ? $request["name"] : "";
-    $description = !empty($request["description"]) ? $request["description"] : "";
-    $dishes = !empty($request["dishes"]) ? $request["dishes"] : "";
     $price = !empty($request["price"]) ? $request["price"] : "";
-    $pax = !empty($request["pax"]) ? $request["pax"] : "";
 
     if (empty($name)) {
       array_push($errors, new ErrorResponse("Name is required"));
-    }
-
-    if (empty($description)) {
-      array_push($errors, new ErrorResponse("Description is required"));
-    }
-
-    if (empty($dishes)) {
-      array_push($errors, new ErrorResponse("Dishes are required"));
     }
 
     if (empty($price)) {
       array_push($errors, new ErrorResponse("Price is required"));
     }
 
-    if (empty($pax)) {
-      array_push($errors, new ErrorResponse("Pax is required"));
-    }
+    $validationQuery = "SELECT * FROM `venue` WHERE `venueId` = $venueId AND `isActive`";
 
-    $validationQuery = "SELECT * FROM `foodpackage` WHERE `foodPackageId` = $foodPackageId AND `isActive`";
-
-    (new Validation($conn, $validationQuery))->isValid(MODULE::FoodPackage, METHOD::UPDATE);
+    (new Validation($conn, $validationQuery))->isValid(MODULE::Venue, METHOD::UPDATE);
 
     if (count($errors) > 0) {
       $errorString = ErrorResponse::constructMessage($errors);
       return throw new Exception($errorString, code: HTTPResponseCode::$BAD_REQUEST->code);
     }
 
-    (new DishPackage($conn))->addOrUpdateRange($foodPackageId, $dishes);
-
-    $sql = "UPDATE `foodpackage` 
+    $sql = "UPDATE `venue` 
       SET `name` = '$name', 
-      `description` = '$description',
-      `pax` = '$pax',
       `price` = '$price',
       `updatedAt` = CURRENT_TIMESTAMP
-      WHERE `foodPackageId` = '$foodPackageId'
+      WHERE `venueId` = '$venueId'
 
       ";
 

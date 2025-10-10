@@ -1,5 +1,6 @@
 <?php
 include("../Config/required.php");
+include("DishPackage/dishPackage.php");
 
 try {
   if (!empty($input["request"])) {
@@ -7,9 +8,9 @@ try {
 
     $name = !empty($request["name"]) ? $request["name"] : "";
     $description = !empty($request["description"]) ? $request["description"] : "";
-    $dishes = !empty($request["dishes"]) ? json_encode($request["dishes"]): "";
+    $dishes = !empty($request["dishes"]) ? $request["dishes"] : "";
     $price = !empty($request["price"]) ? json_encode($request["price"]) : "";
-    $pax = !empty($request["pax"]) ? json_encode($request["pax"]) : "";
+    $pax = !empty($request["pax"]) ? $request["pax"] : "";
 
     if (empty($name)) {
       array_push($errors, new ErrorResponse("Name is required"));
@@ -34,22 +35,27 @@ try {
     $validationQuery = "SELECT * FROM `foodpackage` WHERE 
       `name` = '$name' AND
       `description` = '$description' AND
-      `dishes` = '$dishes' AND
       `pax` = '$pax' AND
       `price` = '$price' AND
       `isActive`
       ";
 
-    (new Validation($conn, $validationQuery))->isValid(MODULE::FoodPackage,METHOD::CREATE);
+    (new Validation($conn, $validationQuery))->isValid(MODULE::FoodPackage, METHOD::CREATE);
 
     if (count($errors) > 0) {
       $errorString = ErrorResponse::constructMessage($errors);
       return throw new Exception($errorString, code: HTTPResponseCode::$BAD_REQUEST->code);
     }
 
+    $foodPackageCountQuery = "SELECT COUNT(*) as Total FROM foodpackage";
+    $foodPackageCount = mysqli_fetch_assoc(mysqli_query($conn, $foodPackageCountQuery));
+    $dishPackageId = (int) $foodPackageCount['Total'] + 1;
+
+    (new DishPackage($conn))->addOrUpdateRange($dishPackageId, $dishes);
+
     $sql = "INSERT INTO `foodpackage` 
-      (`name`, `description`, `dishes`, `pax`, `price`) 
-      VALUES ('$name', '$description', '$dishes', '$pax', '$price')";
+      (`name`, `description`, `pax`, `price`) 
+      VALUES ('$name', '$description', '$pax', '$price')";
 
     $result = mysqli_query($conn, $sql);
 

@@ -2,7 +2,7 @@
 include("../Config/required.php");
 
   try {
-    $sql = "SELECT dishId AS id, price, description AS value FROM `dish` WHERE `isActive`";
+    $sql = "SELECT venueId AS id, price, name AS value FROM `venue` WHERE `isActive` ";
 
     $result = mysqli_query($conn, $sql);
     while ($row = mysqli_fetch_assoc($result)) {
@@ -24,8 +24,4 @@ include("../Config/required.php");
       code: $ex->getCode(),
     ))->toJson();
   }
-
-function getAllUser(){
-
-}
 ?>

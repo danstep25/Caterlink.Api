@@ -6,44 +6,32 @@ try {
     $request = $input["request"];
 
     $name = !empty($request["name"]) ? $request["name"] : "";
-    $contact = !empty($request["contact"]) ? $request["contact"] : "";
-    $description = !empty($request["description"]) ? $request["description"] : "";
-    $address = !empty($request["address"]) ? $request["address"] : "";
+    $price = !empty($request["price"]) ? $request["price"] : "";
 
     if (empty($name)) {
       array_push($errors, new ErrorResponse("Name is required"));
     }
 
-    if (empty($contact)) {
-      array_push($errors, new ErrorResponse("Contact is required"));
+    if (empty($price)) {
+      array_push($errors, new ErrorResponse("Price is required"));
     }
 
-    if (empty($description)) {
-      array_push($errors, new ErrorResponse("Description is required"));
-    }
-
-    if (empty($address)) {
-      array_push($errors, new ErrorResponse("Address is required"));
-    }
-
-    $validationQuery = "SELECT * FROM `supplier` WHERE 
+    $validationQuery = "SELECT * FROM `venue` WHERE 
       `name` = '$name' AND
-      `description` = '$description' AND
-      `address` = '$address' AND
-      `contact` = '$contact' AND
+      `price` = '$price' AND
       `isActive`
       ";
 
-    (new Validation($conn, $validationQuery))->isValid(MODULE::Supplier,METHOD::CREATE);
+    (new Validation($conn, $validationQuery))->isValid(MODULE::Venue,METHOD::CREATE);
 
     if (count($errors) > 0) {
       $errorString = ErrorResponse::constructMessage($errors);
       return throw new Exception($errorString, code: HTTPResponseCode::$BAD_REQUEST->code);
     }
 
-    $sql = "INSERT INTO `supplier` 
-      (`name`, `contact`, `address`, `description`) 
-      VALUES ('$name', '$contact', '$addres', '$description')";
+    $sql = "INSERT INTO `venue` 
+      (`name`, `price`) 
+      VALUES ('$name', '$price')";
 
     $result = mysqli_query($conn, $sql);
 

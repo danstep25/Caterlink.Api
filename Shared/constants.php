@@ -17,5 +17,6 @@
   case Service;
   case Event;
   case Reservation;
+  case Venue;
   }
 ?>

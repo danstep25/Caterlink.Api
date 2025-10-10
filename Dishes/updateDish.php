@@ -40,18 +40,17 @@ try {
       $errorString = ErrorResponse::constructMessage($errors);
       return throw new Exception($errorString, code: HTTPResponseCode::$BAD_REQUEST->code);
     }
-
+    
     $sql = "UPDATE `dish` 
       SET `name` = '$name', 
       `description` = '$description',
       `ingredients` = '$ingredients',
       `categoryId` = '$categoryId',
-      `price` = '$price',
+      `price` = $price,
       `updatedAt` = CURRENT_TIMESTAMP
       WHERE `dishId` = '$dishId'
 
       ";
-
     $result = mysqli_query($conn, $sql);
 
     echo (new Response(

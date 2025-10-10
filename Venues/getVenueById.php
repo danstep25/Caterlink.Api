@@ -1,19 +1,28 @@
 <?php
 include("../Config/required.php");
 
+
+if (isset($_GET['venueId'])) {
+  $venueId = $_GET['venueId'];
+
   try {
-    $sql = "SELECT dishId AS id, price, description AS value FROM `dish` WHERE `isActive`";
+    $sql = "SELECT * FROM venue WHERE `isActive` AND `venueId` = $venueId";
 
     $result = mysqli_query($conn, $sql);
+
+    if (mysqli_num_rows(($result)) === 0)
+      return throw new Error(HTTPResponseCode::$NOT_FOUND->message, HTTPResponseCode::$NOT_FOUND->code);
+
     while ($row = mysqli_fetch_assoc($result)) {
-      $data[] = $row;
+      $data = $row;
     }
 
+    
     echo (new Response(
       status: 'success',
       message: HTTPResponseCode::$SUCCESS->message,
       data: $data,  // now data is user info
-      code: HTTPResponseCode::$SUCCESS->code
+      code: HTTPResponseCode::$SUCCESS->code,
     ))->toJson();
 
   } catch (Throwable $ex) {
@@ -24,8 +33,5 @@ include("../Config/required.php");
       code: $ex->getCode(),
     ))->toJson();
   }
-
-function getAllUser(){
-
 }
 ?>

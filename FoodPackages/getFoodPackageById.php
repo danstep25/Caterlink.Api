@@ -6,7 +6,18 @@ if (isset($_GET['foodPackageId'])) {
   $foodPackageId = $_GET['foodPackageId'];
 
   try {
-    $sql = "SELECT * FROM foodpackage WHERE `isActive` AND `foodPackageId` = $foodPackageId";
+    $sql = "SELECT 
+              f.*,
+              d.dishId as dishId,
+              d.dishPackageId as dishPackageId,
+              d.servingSize as servingSize
+            FROM `foodpackage` f
+            JOIN `dishpackage` d 
+              ON f.foodPackageId = d.foodPackageId 
+            WHERE 
+              f.isActive AND
+              d.isActive AND 
+            f.foodPackageId = $foodPackageId";
 
     $result = mysqli_query($conn, $sql);
 
@@ -14,13 +25,20 @@ if (isset($_GET['foodPackageId'])) {
       return throw new Error(HTTPResponseCode::$NOT_FOUND->message, HTTPResponseCode::$NOT_FOUND->code);
 
     while ($row = mysqli_fetch_assoc($result)) {
-      if (isset($row['dishes']))
-        $row['dishes'] = json_decode($row['dishes'], true);
-      
-      $data = $row;
+      if (empty($data)) {
+        $data = $row;
+        $data['dishes'] = []; // ✅ initialize once
+      }
+
+      $data['dishes'][] = [
+        'dishPackageId' => $row['dishPackageId'],
+        'dishId' => $row['dishId'],
+        'servingSize' => $row['servingSize']
+      ];
     }
 
-    
+
+
     echo (new Response(
       status: 'success',
       message: HTTPResponseCode::$SUCCESS->message,
