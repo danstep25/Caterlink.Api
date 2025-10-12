@@ -1,6 +1,7 @@
 <?php
 include("../Config/required.php");
 include("ReservationPackage/reservationPackage.php");
+include("Transaction/transaction.php");
 
 try {
   if (!empty($input["request"])) {
@@ -13,10 +14,14 @@ try {
     $reservationPackage = !empty($request["reservationPackage"]) ? $request["reservationPackage"] : "";
     $noOfGuest = !empty($request["noOfGuest"]) ? $request["noOfGuest"] : "";
     $dateFrom = !empty($request["dateFrom"]) ? $request["dateFrom"] : "";
-    $dateTo = !empty($request["dateTo"]) ? $request["dateTo"] : "";
+    // If dateTo is empty, set it to NULL (not "NULL" string)
+    $dateTo = !empty($request["dateTo"]) ? $request["dateTo"] : null;
     $venueId = !empty($request["venueId"]) ? $request["venueId"] : "";
     $totalPrice = !empty($request["totalPrice"]) ? $request["totalPrice"] : "";
+    $isDiscount = !empty($request["isDiscount"]) ? $request["isDiscount"] : "0";
+    $discount = !empty($request["discount"]) ? $request["discount"] : "";
 
+    // Validate required fields
     if (empty($fullName)) {
       array_push($errors, new ErrorResponse("Full Name is required"));
     }
@@ -44,14 +49,14 @@ try {
     if (empty($totalPrice)) {
       array_push($errors, new ErrorResponse("Total Price is required"));
     }
-    
+
+    // Validate the reservation (ensure no duplicates with the same fullName, address, dateFrom, dateTo)
     $validationQuery = "SELECT * FROM `reservation` WHERE 
       `fullName` = '$fullName' AND
       `address` = '$address' AND
       `dateFrom` = '$dateFrom' AND
-      `dateTo` = '$dateTo' AND
-      `isActive`
-      ";
+      `dateTo` = " . ($dateTo === null ? "NULL" : "'$dateTo'") . " AND
+      `isActive`";
 
     (new Validation($conn, $validationQuery))->isValid(MODULE::Reservation,METHOD::CREATE);
 
@@ -60,26 +65,32 @@ try {
       return throw new Exception($errorString, code: HTTPResponseCode::$BAD_REQUEST->code);
     }
 
+    // Count the total number of reservations
     $reservationCountQuery = "SELECT COUNT(*) as Total FROM reservation";
     $reservationCount = mysqli_fetch_assoc(mysqli_query($conn, $reservationCountQuery));
     $reservationPackageId = (int) $reservationCount['Total'] + 1;
 
     (new ReservationPackage($conn))->addOrUpdateRange($reservationPackageId, $reservationPackage);
+    (new Transaction($conn))->addOrUpdateRange($reservationPackageId, null);
 
+    // Prepare the SQL statement
     $sql = "INSERT INTO `reservation` 
-      (`fullName`, `address`, `contactNo`, `eventId`, `noOfGuest`, `dateFrom`, `dateTo`, `venueId`, `totalPrice`) 
-      VALUES ('$fullName', '$address' , '$contactNo', '$eventId', '$noOfGuest', '$dateFrom', '$dateTo', '$venueId', '$totalPrice')";
+      (`fullName`, `address`, `contactNo`, `eventId`, `noOfGuest`, `dateFrom`, `dateTo`, `venueId`, `isDiscount`, `discount`, `totalPrice`) 
+      VALUES ('$fullName', '$address', '$contactNo', '$eventId', '$noOfGuest', '$dateFrom', " . ($dateTo === null ? "NULL" : "'$dateTo'") . ", '$venueId', '$isDiscount', '$discount', '$totalPrice')";
 
+    // Execute the query
     $result = mysqli_query($conn, $sql);
 
+    // Return success response
     echo (new Response(
       status: 'success',
       message: HTTPResponseCode::$CREATED->message,
-      data: null,  // now data is user info
+      data: null,  // Now data is user info
       code: HTTPResponseCode::$CREATED->code
     ))->toJson();
   }
 } catch (Throwable $ex) {
+  // Handle errors and exceptions
   echo (new Response(
     status: 'failed',
     message: $ex->getMessage() . '.',

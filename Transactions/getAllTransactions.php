@@ -5,26 +5,18 @@ include("../Config/required.php");
 try {
   $offset = ((int) $pageIndex - 1) * $pageSize;
   $sql = "SELECT 
-              r.*,
               t.*,
-              e.description
+              r.*
             FROM `reservation` r
-            JOIN  `event` e ON e.eventId = r.eventId
-            JOIN `transaction` t ON t.reservationId = r.reservationId
-            WHERE r.isActive 
-            GROUP BY 
-              r.reservationId ";
+            JOIN  `transaction` t ON r.reservationId = t.reservationId
+            WHERE r.isActive AND t.statusId <> 3
+            GROUP BY t.reservationId ";
 
   if (isset($_GET["searchValue"])) {
     if ($searchValue = $_GET["searchValue"]) {
       $sql .= " AND r.fullName LIKE '%" . $searchValue . "%' OR
                 e.description LIKE '%$searchValue%'";
     }
-  }
-
-  if (isset($_GET["dateFrom"])) {
-    $dateFrom = $_GET["dateFrom"];
-    $sql .= " AND r.dateFrom LIKE '%" . $dateFrom . "%'";
   }
 
   if (!empty($pageSize))

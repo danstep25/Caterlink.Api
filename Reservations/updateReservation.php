@@ -17,6 +17,8 @@ try {
     $dateTo = !empty($request["dateTo"]) ? $request["dateTo"] : "";
     $venueId = !empty($request["venueId"]) ? $request["venueId"] : "";
     $totalPrice = !empty($request["totalPrice"]) ? $request["totalPrice"] : "";
+    $isDiscount = !empty($request["isDiscount"]) ? $request["isDiscount"] : '0';
+    $discount = !empty($request["discount"]) ? $request["discount"] : "";
 
     if (empty($fullName)) {
       array_push($errors, new ErrorResponse("Full Name is required"));
@@ -56,7 +58,7 @@ try {
     }
 
     (new ReservationPackage($conn))->addOrUpdateRange($reservationId, $reservationPackage);
-
+    
     $sql = "UPDATE `reservation` SET 
         `fullName` = '$fullName', 
         `address` = '$address', 
@@ -66,6 +68,8 @@ try {
         `dateFrom` = '$dateFrom', 
         `dateTo` = '$dateTo',
         `venueId` = '$venueId',
+        `isDiscount` = '$isDiscount',
+        `discount` = '$discount',
         `totalPrice` = '$totalPrice' 
       WHERE reservationId = $reservationId";
 

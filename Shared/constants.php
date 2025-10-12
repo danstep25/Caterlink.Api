@@ -18,5 +18,6 @@
   case Event;
   case Reservation;
   case Venue;
+  case Transaction;
   }
 ?>

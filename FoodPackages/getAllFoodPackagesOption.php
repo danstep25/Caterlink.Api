@@ -2,7 +2,7 @@
 include("../Config/required.php");
 
   try {
-    $sql = "SELECT foodPackageId AS id, description AS value FROM `foodpackage` WHERE `isActive`";
+    $sql = "SELECT foodPackageId AS id, price, description AS value FROM `foodpackage` WHERE `isActive`";
 
     $result = mysqli_query($conn, $sql);
     while ($row = mysqli_fetch_assoc($result)) {
