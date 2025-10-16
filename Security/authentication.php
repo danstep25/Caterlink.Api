@@ -13,7 +13,8 @@ if (isset($username) && isset($password)) {
             "username" => $info["username"],
             "firstname" => $info["firstname"],
             "lastname" => $info["lastname"],
-            "middlename" => $info["middlename"]
+            "middlename" => $info["middlename"],
+            "role"=> $info["role"],
         ];
     }
 

@@ -11,6 +11,7 @@ try {
     $middlename = !empty($request["middlename"]) ? $request["middlename"] : "";
     $lastname = !empty($request["lastname"]) ? $request["lastname"] : "";
     $suffix = !empty($request["suffix"]) ? $request["suffix"] : "";
+    $role = !empty($request["role"]) ? $request["role"] : "";
 
 
     if (empty($firstname)) {
@@ -21,11 +22,16 @@ try {
       array_push($errors, new ErrorResponse("Last Name is required"));
     }
 
+    if (empty($role)) {
+      array_push($errors, new ErrorResponse("Role is required"));
+    }
+
     $validationQuery = "SELECT * FROM `user` WHERE 
       `firstname` = '" . $firstname . "' AND
       `middlename` = '" . $middlename . "' AND
       `lastname` = '" . $lastname . "' AND
       `suffix` = '" . $suffix . "' AND
+      `role` = '" . $role . "' AND
       `isActive`
       ";
 
@@ -37,8 +43,8 @@ try {
     }
 
     $sql = "INSERT INTO `user` 
-      (`username`, `password`, `firstname`, `middlename`, `lastname`, `suffix`) 
-      VALUES ('" . $username . "', '" . $password . "', '" . $firstname . "', '" . $middlename . "', '" . $lastname . "' , '". $suffix ."')";
+      (`username`, `password`, `firstname`, `middlename`, `lastname`, `suffix`, `role`) 
+      VALUES ('" . $username . "', '" . $password . "', '" . $firstname . "', '" . $middlename . "', '" . $lastname . "' , '". $suffix ."', '". $role ."')";
 
     $result = mysqli_query($conn, $sql);
 
