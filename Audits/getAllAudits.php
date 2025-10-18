@@ -5,7 +5,7 @@ include("../Config/required.php");
 if ($pageSize > 0) {
   try {
     $offset = ((int)$pageIndex - 1) * $pageSize;
-    $sql = "SELECT * FROM `supplier` WHERE `isActive` ";
+    $sql = "SELECT * FROM `audit` ";
 
     if (isset($_GET["searchValue"])) {
       if ($searchValue = $_GET["searchValue"]){
