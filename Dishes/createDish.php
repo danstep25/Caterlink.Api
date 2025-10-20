@@ -9,7 +9,7 @@ try {
     $description = !empty($request["description"]) ? $request["description"] : "";
     $ingredients = !empty($request["ingredients"]) ? json_encode($request["ingredients"]): "";
     $categoryId = !empty($request["categoryId"]) ? $request["categoryId"] : "";
-    $price = !empty($request["price"]) ? json_encode($request["price"]) : "";
+    $price = !empty($request["price"]) ? $request["price"] : "";
 
     if (empty($name)) {
       array_push($errors, new ErrorResponse("Name is required"));
@@ -17,10 +17,6 @@ try {
 
     if (empty($description)) {
       array_push($errors, new ErrorResponse("Description is required"));
-    }
-
-    if (empty($ingredients)) {
-      array_push($errors, new ErrorResponse("Ingredients is required"));
     }
 
     if (empty($categoryId)) {

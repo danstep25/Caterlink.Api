@@ -43,7 +43,7 @@ try {
 
     $sql = "INSERT INTO `supplier` 
       (`name`, `contact`, `address`, `description`) 
-      VALUES ('$name', '$contact', '$addres', '$description')";
+      VALUES ('$name', '$contact', '$address', '$description')";
 
     $result = mysqli_query($conn, $sql);
 

@@ -20,10 +20,6 @@ try {
       array_push($errors, new ErrorResponse("Description is required"));
     }
 
-    if (empty($ingredients)) {
-      array_push($errors, new ErrorResponse("Ingredients is required"));
-    }
-
     if (empty($categoryId)) {
       array_push($errors, new ErrorResponse("Category is required"));
     }
