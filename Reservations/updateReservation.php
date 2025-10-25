@@ -14,11 +14,14 @@ try {
     $reservationPackage = !empty($request["reservationPackage"]) ? $request["reservationPackage"] : "";
     $noOfGuest = !empty($request["noOfGuest"]) ? $request["noOfGuest"] : "";
     $dateFrom = !empty($request["dateFrom"]) ? $request["dateFrom"] : "";
-    $dateTo = !empty($request["dateTo"]) ? $request["dateTo"] : "";
+    $timeFrom = !empty($request["timeFrom"]) ? $request["timeFrom"] : "";
+    $dateTo = !empty($request["dateTo"]) ? $request["dateTo"] : null;
+    $timeTo = !empty($request["timeTo"]) ? $request["timeTo"] : null;
     $venueId = !empty($request["venueId"]) ? $request["venueId"] : "";
     $totalPrice = !empty($request["totalPrice"]) ? $request["totalPrice"] : "";
     $isDiscount = !empty($request["isDiscount"]) ? $request["isDiscount"] : '0';
     $discount = !empty($request["discount"]) ? $request["discount"] : "";
+    $remarks = !empty($request["remarks"]) ? $request["remarks"] : "";
 
     if (empty($fullName)) {
       array_push($errors, new ErrorResponse("Full Name is required"));
@@ -58,19 +61,20 @@ try {
     }
 
     (new ReservationPackage($conn))->addOrUpdateRange($reservationId, $reservationPackage);
-    
+
     $sql = "UPDATE `reservation` SET 
         `fullName` = '$fullName', 
         `address` = '$address', 
         `contactNo` = '$contactNo', 
         `eventId` = '$eventId', 
         `noOfGuest` = '$noOfGuest', 
-        `dateFrom` = '$dateFrom', 
-        `dateTo` = '$dateTo',
+        `dateFrom` = '$timeFrom', 
+        `dateTo` = ".($dateTo === null ? "NULL" : "'" . $timeTo ."'").",
         `venueId` = '$venueId',
         `isDiscount` = '$isDiscount',
         `discount` = '$discount',
-        `totalPrice` = '$totalPrice' 
+        `totalPrice` = '$totalPrice',
+        `remarks` = '$remarks'
       WHERE reservationId = $reservationId";
 
     $result = mysqli_query($conn, $sql);

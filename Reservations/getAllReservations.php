@@ -11,9 +11,7 @@ try {
             FROM `reservation` r
             JOIN  `event` e ON e.eventId = r.eventId
             JOIN `transaction` t ON t.reservationId = r.reservationId
-            WHERE r.isActive 
-            GROUP BY 
-              r.reservationId ";
+            WHERE r.isActive";
 
   if (isset($_GET["searchValue"])) {
     if ($searchValue = $_GET["searchValue"]) {
@@ -26,6 +24,8 @@ try {
     $dateFrom = $_GET["dateFrom"];
     $sql .= " AND r.dateFrom LIKE '%" . $dateFrom . "%'";
   }
+
+  $sql .= " GROUP BY r.reservationId ";
 
   if (!empty($pageSize))
     $dataLimiter = $sql . "LIMIT $pageSize OFFSET $offset";

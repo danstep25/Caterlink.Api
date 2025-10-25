@@ -34,8 +34,8 @@ class Transaction
     if(empty($transactions['transactionId']))
     {
       $addTransaction = "INSERT INTO `transaction` 
-                                (`reservationId`, `amount`, `statusId`) 
-                                VALUES('$reservationId', 0, 1)";
+                                (`reservationId`, `balance`, `statusId`) 
+                                VALUES('$reservationId', $transactionDetails, 0)";
       mysqli_query($this->conn, $addTransaction);
     }
 
@@ -44,13 +44,14 @@ class Transaction
       $statusId = $transactions['statusId'];
       $totalPrice = $transactions['totalPrice'];
       $amount = $transactionDetails['amount'];
-      $previousAmount = $transactions['previousAmount'];
       $balance = $transactions['balance'] <> 0 ? $transactions['balance'] : $totalPrice;
-      $downPaymentRate = $totalPrice * (10 / 100);
       $balance = $balance - $amount;
-      $totalPaid = $totalPrice - $balance;
 
-      if($totalPaid >= $downPaymentRate && $balance != 0){
+      if($statusId == 0 && $balance != 0){
+        $statusId = 1;
+      }
+
+      else if($statusId == 1 && $balance != 0){
         $statusId = 2;
       }
 
@@ -59,12 +60,12 @@ class Transaction
       }
 
       $udpateTransaction = "UPDATE 
-                              `transaction` 
-                            SET 
-                              amount = $amount,
-                              statusId = $statusId,
-                              balance = $balance
-                            WHERE transactionId = $id";
+              `transaction` 
+            SET 
+              amount = $amount,
+              statusId = $statusId,
+              balance = $balance
+            WHERE transactionId = $id";
 
       mysqli_query($this->conn, query: $udpateTransaction);
     }

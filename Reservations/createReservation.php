@@ -14,12 +14,16 @@ try {
     $reservationPackage = !empty($request["reservationPackage"]) ? $request["reservationPackage"] : "";
     $noOfGuest = !empty($request["noOfGuest"]) ? $request["noOfGuest"] : "";
     $dateFrom = !empty($request["dateFrom"]) ? $request["dateFrom"] : "";
+    $timeFrom = !empty($request["timeFrom"]) ? $request["timeFrom"] : "";
+
     // If dateTo is empty, set it to NULL (not "NULL" string)
     $dateTo = !empty($request["dateTo"]) ? $request["dateTo"] : null;
+    $timeTo = !empty($request["timeTo"]) ? $request["timeTo"] : null;
     $venueId = !empty($request["venueId"]) ? $request["venueId"] : "";
     $totalPrice = !empty($request["totalPrice"]) ? $request["totalPrice"] : "";
     $isDiscount = !empty($request["isDiscount"]) ? $request["isDiscount"] : "0";
     $discount = !empty($request["discount"]) ? $request["discount"] : "";
+    $remarks = !empty($request["remarks"]) ? $request["remarks"] : "";
 
     // Validate required fields
     if (empty($fullName)) {
@@ -71,12 +75,12 @@ try {
     $reservationPackageId = (int) $reservationCount['Total'] + 1;
 
     (new ReservationPackage($conn))->addOrUpdateRange($reservationPackageId, $reservationPackage);
-    (new Transaction($conn))->addOrUpdateRange($reservationPackageId, null);
+    (new Transaction($conn))->addOrUpdateRange($reservationPackageId, $totalPrice);
 
     // Prepare the SQL statement
     $sql = "INSERT INTO `reservation` 
-      (`fullName`, `address`, `contactNo`, `eventId`, `noOfGuest`, `dateFrom`, `dateTo`, `venueId`, `isDiscount`, `discount`, `totalPrice`) 
-      VALUES ('$fullName', '$address', '$contactNo', '$eventId', '$noOfGuest', '$dateFrom', " . ($dateTo === null ? "NULL" : "'$dateTo'") . ", '$venueId', '$isDiscount', '$discount', '$totalPrice')";
+      (`fullName`, `address`, `contactNo`, `eventId`, `noOfGuest`, `dateFrom`, `dateTo`, `venueId`, `isDiscount`, `discount`, `totalPrice`, `remarks`) 
+      VALUES ('$fullName', '$address', '$contactNo', '$eventId', '$noOfGuest', '$timeFrom', " . ($dateTo === null ? "NULL" : "'". $timeTo ."'") . ", '$venueId', '$isDiscount', '$discount', '$totalPrice', '$remarks')";
 
     // Execute the query
     $result = mysqli_query($conn, $sql);
