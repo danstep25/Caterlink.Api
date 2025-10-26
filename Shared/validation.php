@@ -22,6 +22,7 @@ class Validation
           return throw new Exception(HTTPResponseCode::$CONFLICT->message . ": " . $moduleName->name . " already exist", HTTPResponseCode::$CONFLICT->code);
         }
         break;
+
       case METHOD::DELETE:
       case METHOD::UPDATE:
         if (mysqli_num_rows($result) == 0) {
@@ -29,5 +30,18 @@ class Validation
         }
         break;
     }
+  }
+
+  public function isUsed(MODULE $moduleName){
+    $result = mysqli_query($this->conn, $this->validationQuery);
+
+if ($result && $row = mysqli_fetch_assoc($result)) {
+    if ($row['isUsed'] == 1) {
+      throw new Exception(
+          $moduleName->name . " cannot be deleted because it is being used. " . HTTPResponseCode::$CONFLICT->message,
+          HTTPResponseCode::$CONFLICT->code
+      );
+    }
+}
   }
 }

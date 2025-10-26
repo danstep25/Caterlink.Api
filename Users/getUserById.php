@@ -16,7 +16,6 @@ if (isset($_GET['userId'])) {
     while ($row = mysqli_fetch_assoc($result)) {
       $data = $row;
     }
-
     
     echo (new Response(
       status: 'success',

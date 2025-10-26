@@ -13,7 +13,6 @@ try {
     $suffix = !empty($request["suffix"]) ? $request["suffix"] : "";
     $role = !empty($request["role"]) ? $request["role"] : "";
 
-
     if (empty($firstname)) {
       array_push($errors, new ErrorResponse("First Name is required"));
     }
