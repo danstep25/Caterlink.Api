@@ -6,7 +6,14 @@ try {
   $offset = ((int) $pageIndex - 1) * $pageSize;
   $sql = "SELECT 
               t.*,
-              r.*
+              r.reservationId,
+              r.fullName,
+              r.address,
+              r.contactNo,
+              r.noOfGuest,
+              r.dateFrom,
+              r.dateTo,
+              r.totalPrice
             FROM `reservation` r
             JOIN  `transaction` t ON r.reservationId = t.reservationId
             WHERE r.isActive

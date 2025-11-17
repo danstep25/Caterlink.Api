@@ -3,7 +3,7 @@ include("../Config/required.php");
 
 if (isset($username) && isset($password)) {
 
-    $sql = "SELECT * FROM user WHERE `username` = '$username' AND `password` = '$password' AND `isActive`";
+    $sql = "SELECT * FROM user WHERE `username` = '$username' AND `password` = '$password' AND `isActive` AND `isDeactivated` = 0";
     $result = mysqli_query($conn, $sql);
     $res = mysqli_num_rows($result);
     

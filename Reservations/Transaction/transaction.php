@@ -46,6 +46,8 @@ class Transaction
       $amount = $transactionDetails['amount'];
       $balance = $transactions['balance'] <> 0 ? $transactions['balance'] : $totalPrice;
       $balance = $balance - $amount;
+      $refNo = $transactionDetails['refNo'];
+      $paymentMethod = $transactionDetails['paymentMethod'];
 
       if($statusId == 0 && $balance != 0){
         $statusId = 1;
@@ -64,7 +66,9 @@ class Transaction
             SET 
               amount = $amount,
               statusId = $statusId,
-              balance = $balance
+              balance = $balance,
+              refNo  = $refNo,
+              paymentMethod = '$paymentMethod'
             WHERE transactionId = $id";
 
       mysqli_query($this->conn, query: $udpateTransaction);

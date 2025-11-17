@@ -3,6 +3,7 @@
   case CREATE;
   case UPDATE;
   case DELETE; 
+  case DEACTIVATE;
   }
 
   enum MODULE {

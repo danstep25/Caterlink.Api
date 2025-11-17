@@ -7,7 +7,7 @@ class Validation
   private string $validationQuery;
   private mysqli $conn;
 
-  public function __construct(mysqli $conn, string $validationQuery)
+  public function __construct(mysqli $conn, string $validationQuery = "")
   {
     $this->conn = $conn;
     $this->validationQuery = $validationQuery;
@@ -29,6 +29,18 @@ class Validation
           return throw new Exception($moduleName->name . " " . HTTPResponseCode::$NOT_FOUND->message, HTTPResponseCode::$NOT_FOUND->code);
         }
         break;
+    }
+  }
+
+  public function isOverlappingReservation(MODULE $moduleName, string $dateFrom, string $dateTo){
+    $query = "SELECT *
+        FROM reservation
+        WHERE dateFrom <= '$dateTo'
+          AND dateTo >= '$dateFrom';
+    ";
+    $result = mysqli_query($this->conn, $query);
+    if (mysqli_num_rows($result) > 0) {
+      return throw new Exception(HTTPResponseCode::$CONFLICT->message . ": " . $moduleName->name . " is Overlapping", HTTPResponseCode::$CONFLICT->code);
     }
   }
 
