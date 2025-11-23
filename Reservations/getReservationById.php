@@ -9,10 +9,15 @@ if (isset($_GET['reservationId'])) {
     $sql = "SELECT 
               r.*,
               rp.packageId as packageId,
-              rp.reservationPackageId as reservationPackageId
+              rp.reservationPackageId as reservationPackageId,
+              sp.serviceId as serviceId,
+              sp.servicePackageId as servicePackageId,
+              sp.quantity as quantity
             FROM `reservation` r
             JOIN `reservationpackage` rp 
               ON rp.reservationId = r.reservationId
+            LEFT JOIN `servicePackage` sp 
+              ON sp.reservationId = r.reservationId AND sp.isActive
             WHERE 
               r.isActive AND 
               rp.isActive AND 
@@ -25,14 +30,34 @@ if (isset($_GET['reservationId'])) {
     if (mysqli_num_rows(($result)) === 0)
       return throw new Error(HTTPResponseCode::$NOT_FOUND->message, HTTPResponseCode::$NOT_FOUND->code);
 
+    $addedPackageIds = [];
+    $addedServiceIds = [];
+    
     while ($row = mysqli_fetch_assoc($result)) {
-      if(empty($data))
+      if(empty($data)) {
         $data = $row;
+        $data['reservationPackage'] = [];
+        $data['servicePackage'] = [];
+      }
 
-      $data['reservationPackage'][] = [
-        'reservationPackageId' => $row['reservationPackageId'],
-        'packageId' => $row['packageId']
-      ];
+      if (!in_array($row['reservationPackageId'], $addedPackageIds)) {
+        $data['reservationPackage'][] = [
+          'reservationPackageId' => $row['reservationPackageId'],
+          'packageId' => $row['packageId']
+        ];
+        $addedPackageIds[] = $row['reservationPackageId'];
+      }
+
+      if (!empty($row['serviceId']) && !empty($row['servicePackageId'])) {
+        if (!in_array($row['servicePackageId'], $addedServiceIds)) {
+          $data['servicePackage'][] = [
+            'servicePackageId' => $row['servicePackageId'],
+            'serviceId' => $row['serviceId'],
+            'quantity' => $row['quantity']
+          ];
+          $addedServiceIds[] = $row['servicePackageId'];
+        }
+      }
     }
 
     echo (new Response(

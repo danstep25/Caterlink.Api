@@ -1,6 +1,7 @@
 <?php
 include("../Config/required.php");
 include("ReservationPackage/reservationPackage.php");
+include("ServicePackage/servicePackage.php");
 
 try {
   if (!empty($input["request"])) {
@@ -12,6 +13,7 @@ try {
     $contactNo = !empty($request["contactNo"]) ? $request["contactNo"] : "";
     $eventId = !empty($request["eventId"]) ? $request["eventId"] : "";
     $reservationPackage = !empty($request["reservationPackage"]) ? $request["reservationPackage"] : "";
+    $servicePackage = !empty($request["servicePackage"]) ? $request["servicePackage"] : "";
     $noOfGuest = !empty($request["noOfGuest"]) ? $request["noOfGuest"] : "";
     $dateFrom = !empty($request["dateFrom"]) ? $request["dateFrom"] : "";
     $timeFrom = !empty($request["timeFrom"]) ? $request["timeFrom"] : "";
@@ -59,8 +61,8 @@ try {
       $errorString = ErrorResponse::constructMessage($errors);
       return throw new Exception($errorString, code: HTTPResponseCode::$BAD_REQUEST->code);
     }
-
     (new ReservationPackage($conn))->addOrUpdateRange($reservationId, $reservationPackage);
+    (new ServicePackage($conn))->addOrUpdateRange($reservationId, $servicePackage);
 
     $sql = "UPDATE `reservation` SET 
         `fullName` = '$fullName', 

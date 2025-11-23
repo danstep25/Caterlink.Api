@@ -8,14 +8,14 @@ class ReservationPackage
 
   public function addOrUpdateRange(int $reservationId, array $packages)
   {
-    $reservationPackageList = [];
+    $servicePackageList = [];
     $existingIdList = [];
 
     $sql = "SELECT * FROM reservationpackage WHERE reservationId = $reservationId AND isActive";
     $result = mysqli_query($this->conn, query: $sql);
 
     while($reservations = mysqli_fetch_assoc($result)){
-      $reservationPackageList[$reservations['reservationPackageId']] = $reservations;
+      $servicePackageList[$reservations['reservationPackageId']] = $reservations;
     }
     
     foreach($packages as $package){
@@ -37,7 +37,7 @@ class ReservationPackage
       }
     }
 
-    $deletedReservationPackages = array_diff(array_keys($reservationPackageList), $existingIdList);
+    $deletedReservationPackages = array_diff(array_keys($servicePackageList), $existingIdList);
 
     if (!empty($deletedReservationPackages)) {
       foreach ($deletedReservationPackages as $deleteReservationPackageId) {

@@ -7,6 +7,7 @@ try {
 
     $serviceId =  !empty($request["serviceId"]) ? $request["serviceId"] : "";
     $description = !empty($request["description"]) ? $request["description"] : "";
+    $price = !empty($request["price"]) ? $request["price"] : "";
 
     if (empty($description)) {
       array_push($errors, new ErrorResponse("description is required"));
@@ -24,6 +25,7 @@ try {
     $sql = "UPDATE `service` 
       SET
       `description` = '$description',
+      `price` = '$price',
       `updatedAt` = CURRENT_TIMESTAMP
       WHERE `serviceId` = '$serviceId'
 

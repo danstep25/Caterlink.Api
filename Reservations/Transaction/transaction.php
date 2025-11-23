@@ -46,7 +46,7 @@ class Transaction
       $amount = $transactionDetails['amount'];
       $balance = $transactions['balance'] <> 0 ? $transactions['balance'] : $totalPrice;
       $balance = $balance - $amount;
-      $refNo = $transactionDetails['refNo'];
+      $refNo = !empty($transactionDetails['refNo']) ? $transactionDetails['refNo'] : "NULL";
       $paymentMethod = $transactionDetails['paymentMethod'];
 
       if($statusId == 0 && $balance != 0){

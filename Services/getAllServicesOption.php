@@ -2,7 +2,7 @@
 include("../Config/required.php");
 
   try {
-    $sql = "SELECT serviceId AS id, description AS value FROM `service` WHERE `isActive`";
+    $sql = "SELECT serviceId AS id, price, description AS value FROM `service` WHERE `isActive`";
 
     $result = mysqli_query($conn, $sql);
     while ($row = mysqli_fetch_assoc($result)) {

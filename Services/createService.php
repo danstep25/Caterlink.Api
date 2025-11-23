@@ -6,6 +6,7 @@ try {
     $request = $input["request"];
 
     $description = !empty($request["description"]) ? $request["description"] : "";
+    $price = !empty($request["price"]) ? $request["price"] : "";
 
     if (empty($description)) {
       array_push($errors, new ErrorResponse("description is required"));
@@ -24,8 +25,8 @@ try {
     }
 
     $sql = "INSERT INTO `service` 
-      (`description`) 
-      VALUES ('$description')";
+      (`description`,`price`)
+      VALUES ('$description', $price)";
 
     $result = mysqli_query($conn, $sql);
 

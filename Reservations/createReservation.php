@@ -1,6 +1,7 @@
 <?php
 include("../Config/required.php");
 include("ReservationPackage/reservationPackage.php");
+include("ServicePackage/servicePackage.php");
 include("Transaction/transaction.php");
 
 try {
@@ -12,6 +13,7 @@ try {
     $contactNo = !empty($request["contactNo"]) ? $request["contactNo"] : "";
     $eventId = !empty($request["eventId"]) ? $request["eventId"] : "";
     $reservationPackage = !empty($request["reservationPackage"]) ? $request["reservationPackage"] : "";
+    $servicePackage = !empty($request["servicePackage"]) ? $request["servicePackage"] : "";
     $noOfGuest = !empty($request["noOfGuest"]) ? $request["noOfGuest"] : "";
     $dateFrom = !empty($request["dateFrom"]) ? $request["dateFrom"] : "";
     $timeFrom = !empty($request["timeFrom"]) ? $request["timeFrom"] : "";
@@ -76,6 +78,9 @@ try {
     $reservationPackageId = (int) $reservationCount['Total'] + 1;
 
     (new ReservationPackage($conn))->addOrUpdateRange($reservationPackageId, $reservationPackage);
+    if (!empty($servicePackage)) {
+      (new ServicePackage($conn))->addOrUpdateRange($reservationPackageId, $servicePackage);
+    }
     (new Transaction($conn))->addOrUpdateRange($reservationPackageId, $totalPrice);
 
     // Prepare the SQL statement
