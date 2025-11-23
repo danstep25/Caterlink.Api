@@ -2,6 +2,7 @@
 include("../Config/required.php");
 include("ReservationPackage/reservationPackage.php");
 include("ServicePackage/servicePackage.php");
+include("Transaction/transaction.php");
 
 try {
   if (!empty($input["request"])) {
@@ -63,6 +64,7 @@ try {
     }
     (new ReservationPackage($conn))->addOrUpdateRange($reservationId, $reservationPackage);
     (new ServicePackage($conn))->addOrUpdateRange($reservationId, $servicePackage);
+    (new Transaction($conn))->addOrUpdateRange($reservationId, $totalPrice);
 
     $sql = "UPDATE `reservation` SET 
         `fullName` = '$fullName', 

@@ -43,22 +43,24 @@ class Transaction
       $id = $transactions['transactionId'];
       $statusId = $transactions['statusId'];
       $totalPrice = $transactions['totalPrice'];
-      $amount = $transactionDetails['amount'];
-      $balance = $transactions['balance'] <> 0 ? $transactions['balance'] : $totalPrice;
+      $amount = !empty($transactionDetails['amount']) ? $transactionDetails['amount'] : 0;
+      $balance = !empty($transactions['balance']) && !empty($transactionDetails['amount']) ? ($transactions['balance'] <> 0 ? $transactions['balance'] : $totalPrice) : $transactionDetails;
       $balance = $balance - $amount;
       $refNo = !empty($transactionDetails['refNo']) ? $transactionDetails['refNo'] : "NULL";
       $paymentMethod = $transactionDetails['paymentMethod'];
 
-      if($statusId == 0 && $balance != 0){
-        $statusId = 1;
-      }
+      if(!empty($amount) || $amount != 0){
+        if($statusId == 0 && $balance != 0){
+          $statusId = 1;
+        }
 
-      else if($statusId == 1 && $balance != 0){
-        $statusId = 2;
-      }
+        else if($statusId == 1 && $balance != 0){
+          $statusId = 2;
+        }
 
-      else if($balance == 0){
-        $statusId = 3;
+        else if($balance == 0){
+          $statusId = 3;
+        }
       }
 
       $udpateTransaction = "UPDATE 
