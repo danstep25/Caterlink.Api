@@ -38,6 +38,35 @@ try {
     $paginatedResult = $result;
 
   while ($row = mysqli_fetch_assoc($paginatedResult)) {
+    $reservationId = $row['reservationId'];
+    
+    // Fetch reservation packages
+    $packageSql = "SELECT reservationPackageId, packageId 
+                   FROM reservationpackage 
+                   WHERE reservationId = $reservationId AND isActive";
+    $packageResult = mysqli_query($conn, $packageSql);
+    $row['reservationPackage'] = [];
+    while ($packageRow = mysqli_fetch_assoc($packageResult)) {
+      $row['reservationPackage'][] = [
+        'reservationPackageId' => $packageRow['reservationPackageId'],
+        'packageId' => $packageRow['packageId']
+      ];
+    }
+    
+    // Fetch service packages
+    $serviceSql = "SELECT servicePackageId, serviceId, quantity 
+                   FROM servicePackage 
+                   WHERE reservationId = $reservationId AND isActive";
+    $serviceResult = mysqli_query($conn, $serviceSql);
+    $row['servicePackage'] = [];
+    while ($serviceRow = mysqli_fetch_assoc($serviceResult)) {
+      $row['servicePackage'][] = [
+        'servicePackageId' => $serviceRow['servicePackageId'],
+        'serviceId' => $serviceRow['serviceId'],
+        'quantity' => $serviceRow['quantity']
+      ];
+    }
+    
     $data[] = $row;
   }
 
