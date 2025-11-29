@@ -3,7 +3,8 @@
   case CREATE;
   case UPDATE;
   case DELETE; 
-  case DEACTIVATE;
+  case DEACTIVATE; 
+  case CANCEL;
   }
 
   enum MODULE {
@@ -21,5 +22,11 @@
   case Venue;
   case Transaction;
   case Audit;
+  }
+
+  ENUM STATUS {
+    case PENDING;
+    case ACTIVE;
+    case CANCELLED;
   }
 ?>
