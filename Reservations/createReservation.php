@@ -65,7 +65,7 @@ try {
       `isActive`";
 
     (new Validation($conn, $validationQuery))->isValid(MODULE::Reservation,METHOD::CREATE);
-    (new Validation($conn))->isOverlappingReservation(MODULE::Reservation,$timeFrom, $timeTo);
+    (new Validation($conn))->isOverlappingReservation(MODULE::Reservation, $timeFrom, $timeTo, $venueId);
 
     if (count($errors) > 0) {
       $errorString = ErrorResponse::constructMessage($errors);

@@ -9,9 +9,9 @@ try {
               t.*,
               e.description
             FROM `reservation` r
-            JOIN  `event` e ON e.eventId = r.eventId
+            JOIN `event` e ON e.eventId = r.eventId
             JOIN `transaction` t ON t.reservationId = r.reservationId
-            WHERE r.isActive";
+            GROUP BY r.reservationId ";
 
   if (isset($_GET["searchValue"])) {
     if ($searchValue = $_GET["searchValue"]) {
@@ -19,12 +19,8 @@ try {
                 e.description LIKE '%$searchValue%'";
     }
   }
-  if(isset($_GET["isCalendar"])){
-    $dateFrom = $_GET["dateFrom"];
-    $sql .= " AND r.dateFrom LIKE '%" . $dateFrom . "%'";
-  }
-  
-  if (isset($_GET["dateFrom"]) && !isset($_GET["isCalendar"])) {
+
+  if (isset($_GET["dateFrom"])) {
     $dateFrom = $_GET["dateFrom"];
     $dateTo = isset($_GET["dateTo"]) && !empty($_GET["dateTo"]) ? $_GET["dateTo"] : null;
     
@@ -34,8 +30,6 @@ try {
       $sql .= " AND r.dateFrom >= '$dateFrom'";
     }
   }
-
-  $sql .= " GROUP BY r.reservationId ";
 
   if (!empty($pageSize))
     $dataLimiter = $sql . "LIMIT $pageSize OFFSET $offset";
@@ -48,35 +42,6 @@ try {
     $paginatedResult = $result;
 
   while ($row = mysqli_fetch_assoc($paginatedResult)) {
-    $reservationId = $row['reservationId'];
-    
-    // Fetch reservation packages
-    $packageSql = "SELECT reservationPackageId, packageId 
-                   FROM reservationpackage 
-                   WHERE reservationId = $reservationId AND isActive";
-    $packageResult = mysqli_query($conn, $packageSql);
-    $row['reservationPackage'] = [];
-    while ($packageRow = mysqli_fetch_assoc($packageResult)) {
-      $row['reservationPackage'][] = [
-        'reservationPackageId' => $packageRow['reservationPackageId'],
-        'packageId' => $packageRow['packageId']
-      ];
-    }
-    
-    // Fetch service packages
-    $serviceSql = "SELECT servicePackageId, serviceId, quantity 
-                   FROM servicePackage 
-                   WHERE reservationId = $reservationId AND isActive";
-    $serviceResult = mysqli_query($conn, $serviceSql);
-    $row['servicePackage'] = [];
-    while ($serviceRow = mysqli_fetch_assoc($serviceResult)) {
-      $row['servicePackage'][] = [
-        'servicePackageId' => $serviceRow['servicePackageId'],
-        'serviceId' => $serviceRow['serviceId'],
-        'quantity' => $serviceRow['quantity']
-      ];
-    }
-    
     $data[] = $row;
   }
 
@@ -88,7 +53,7 @@ try {
   echo (new Response(
     status: 'success',
     message: HTTPResponseCode::$SUCCESS->message,
-    data: $data,  // now data is user info
+    data: $data,
     code: HTTPResponseCode::$SUCCESS->code,
     totalRecords: $totalRecords,
     totalPages: $totalPages ?? 0,
@@ -105,3 +70,6 @@ try {
     code: $ex->getCode(),
   ))->toJson();
 }
+?>
+
+
