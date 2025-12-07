@@ -14,7 +14,8 @@ class Refund
     $updateReservation = "
     UPDATE `reservation`
     SET 
-        `status` = '" . STATUS::CANCELLED->name . "'
+        `status` = '" . STATUS::CANCELLED->name . "',
+        `updatedAt` = CURRENT_TIMESTAMP
     WHERE `reservationId` = $reservationId";
 
     mysqli_query($this->conn, query: $updateReservation);
